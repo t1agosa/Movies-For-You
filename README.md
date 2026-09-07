@@ -1,4 +1,4 @@
-# KMP-auth-flows
+# Movies For You and KMP-auth-flows
 
 Repositorio de referencia: flujos de autenticación completos en **Kotlin Multiplatform**, con **Firebase Authentication real** — email/password, Google Sign-In y Apple Sign-In — sobre Clean Architecture y MVI.
 

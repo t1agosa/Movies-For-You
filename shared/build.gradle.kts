@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -6,6 +7,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlinxSerialization)
+    id("com.codingfeline.buildkonfig")
 }
 
 kotlin {
@@ -99,6 +101,24 @@ kotlin {
 compose {
     resources {
         packageOfResClass = "com.tiago.kmpauthflows.shared.generated.resources"
+    }
+}
+
+val localProperties = Properties().apply {
+    val localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        load(localPropertiesFile.inputStream())
+    }
+}
+
+buildkonfig {
+    packageName = "com.tiago.kmpauthflows.shared.config"
+    defaultConfigs {
+        buildConfigField(
+            com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING,
+            "TMDB_READ_ACCESS_TOKEN",
+            localProperties.getProperty("tmdb.apiReadAccessToken") ?: ""
+        )
     }
 }
 
