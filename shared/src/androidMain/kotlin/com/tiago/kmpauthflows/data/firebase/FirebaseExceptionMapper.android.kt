@@ -32,13 +32,15 @@ internal fun FirebaseUser?.toFirebaseUserData(): FirebaseUserData {
     val user = this ?: throw AuthException.Unknown(IllegalStateException("Firebase no devolvió un usuario"))
     val providerId = user.providerData
         .map { it.providerId }
-        .firstOrNull { it != "firebase" } // "firebase" siempre aparece, no es el proveedor real
+        .firstOrNull { it != "firebase" }
 
     return FirebaseUserData(
         id = user.uid,
         email = user.email,
         displayName = user.displayName,
         photoUrl = user.photoUrl?.toString(),
-        providerId = providerId
+        providerId = providerId,
+        isEmailVerified = user.isEmailVerified,
+        createdAtMillis = user.metadata?.creationTimestamp ?: 0L
     )
 }

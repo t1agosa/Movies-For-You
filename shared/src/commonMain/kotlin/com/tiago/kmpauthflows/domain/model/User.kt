@@ -5,5 +5,7 @@ data class User(
     val email: String?,
     val displayName: String?,
     val photoUrl: String?,
-    val provider: AuthProvider
+    val provider: AuthProvider,
+    val isEmailVerified: Boolean = true,
+    val createdAtMillis: Long = 0L
 )

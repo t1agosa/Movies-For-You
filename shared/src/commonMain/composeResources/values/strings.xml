@@ -12,4 +12,6 @@
 
     <string name="register_error_passwords_dont_match">Las contraseñas no coinciden</string>
 
+    <string name="auth_error_unverified_email_expired">Tu cuenta fue eliminada por no verificarse dentro de las 24hs. Registrate de nuevo.</string>
+
 </resources>

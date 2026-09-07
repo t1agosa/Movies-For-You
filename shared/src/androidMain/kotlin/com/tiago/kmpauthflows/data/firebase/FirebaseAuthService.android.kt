@@ -20,7 +20,9 @@ actual class FirebaseAuthService {
 
     actual suspend fun signUpWithEmail(email: String, password: String): FirebaseUserData =
         runCatchingFirebase {
-            auth.createUserWithEmailAndPassword(email, password).await().user.toFirebaseUserData()
+            val result = auth.createUserWithEmailAndPassword(email, password).await()
+            result.user?.sendEmailVerification()?.await()
+            result.user.toFirebaseUserData()
         }
 
     actual suspend fun signInWithGoogleIdToken(idToken: String): FirebaseUserData =
@@ -39,6 +41,10 @@ actual class FirebaseAuthService {
 
     actual suspend fun signOut() {
         auth.signOut()
+    }
+
+    actual suspend fun deleteCurrentUser(){
+        auth.currentUser?.delete()?.await()
     }
 
     actual fun observeAuthState(): Flow<FirebaseUserData?> = callbackFlow {

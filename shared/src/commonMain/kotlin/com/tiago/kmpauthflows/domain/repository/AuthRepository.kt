@@ -11,5 +11,6 @@ interface AuthRepository {
     suspend fun loginWithGoogle(activity: PlatformActivity): Result<User>
     suspend fun loginWithApple(activity: PlatformActivity): Result<User>
     suspend fun logout(): Result<Unit>
+    suspend fun deleteCurrentUser():Result<Unit>
     fun observeAuthState(): Flow<User?>
 }

@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
  * la necesitan de verdad (para lanzar su UI nativa); el resto de los
  * flujos de auth (email, logout, observeAuthState) no la tocan.
  */
-expect class PlatformActivity
+expect class PlatformActivity()
 
 @Composable
 expect fun rememberCurrentPlatformActivity(): PlatformActivity

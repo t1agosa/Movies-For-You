@@ -15,6 +15,10 @@ class FakeAuthRepository : AuthRepository {
 
     var logoutCalled = false
         private set
+
+    var deleteCurrentUserCalled = false
+        private set
+
     var lastEmailUsed: String? = null
         private set
     var googleLoginCalled = false
@@ -48,6 +52,11 @@ class FakeAuthRepository : AuthRepository {
         logoutCalled = true
         val error = exceptionToThrow
         return if (error != null) Result.Error(error) else Result.Success(Unit)
+    }
+
+    override suspend fun deleteCurrentUser(): Result<Unit> {
+        deleteCurrentUserCalled = true
+        return Result.Success(Unit)
     }
 
     override fun observeAuthState(): Flow<User?> = authState

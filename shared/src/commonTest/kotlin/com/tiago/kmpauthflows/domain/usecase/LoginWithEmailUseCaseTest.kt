@@ -16,7 +16,8 @@ class LoginWithEmailUseCaseTest {
     private val loginWithEmail = LoginWithEmailUseCase(
         repository = fakeRepository,
         validateEmail = ValidateEmailUseCase(),
-        validatePassword = ValidatePasswordUseCase()
+        validatePassword = ValidatePasswordUseCase(),
+        enforceEmailVerification = EnforceEmailVerificationUseCase(fakeRepository)
     )
 
     @Test

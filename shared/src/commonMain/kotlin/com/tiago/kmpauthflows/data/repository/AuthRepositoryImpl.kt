@@ -43,6 +43,10 @@ class AuthRepositoryImpl(
         firebaseAuthService.signOut()
     }
 
+    override suspend fun deleteCurrentUser(): Result<Unit> = runCatchingAuth {
+        firebaseAuthService.deleteCurrentUser()
+    }
+
     override fun observeAuthState(): Flow<User?> =
         firebaseAuthService.observeAuthState().map { data -> data?.toUser(data.providerId.toAuthProvider()) }
 
@@ -62,7 +66,9 @@ private fun FirebaseUserData.toUser(provider: AuthProvider): User = User(
     email = email,
     displayName = displayName,
     photoUrl = photoUrl,
-    provider = provider
+    provider = provider,
+    isEmailVerified = isEmailVerified,
+    createdAtMillis = createdAtMillis
 )
 
 private fun String?.toAuthProvider(): AuthProvider = when (this) {

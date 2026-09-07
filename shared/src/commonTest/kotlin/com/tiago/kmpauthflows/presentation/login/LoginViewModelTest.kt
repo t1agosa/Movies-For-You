@@ -5,13 +5,13 @@ import com.tiago.kmpauthflows.domain.fake.FakeAuthRepository
 import com.tiago.kmpauthflows.domain.model.AuthException
 import com.tiago.kmpauthflows.domain.model.AuthProvider
 import com.tiago.kmpauthflows.domain.model.User
+import com.tiago.kmpauthflows.domain.usecase.EnforceEmailVerificationUseCase
 import com.tiago.kmpauthflows.domain.usecase.LoginWithAppleUseCase
 import com.tiago.kmpauthflows.domain.usecase.LoginWithEmailUseCase
 import com.tiago.kmpauthflows.domain.usecase.LoginWithGoogleUseCase
 import com.tiago.kmpauthflows.domain.usecase.ValidateEmailUseCase
 import com.tiago.kmpauthflows.domain.usecase.ValidatePasswordUseCase
 import com.tiago.kmpauthflows.platform.PlatformActivity
-import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -22,6 +22,7 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertIs
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
@@ -34,7 +35,10 @@ class LoginViewModelTest {
     private fun createViewModel() = LoginViewModel(
         validateEmailUseCase = ValidateEmailUseCase(),
         validatePasswordUseCase = ValidatePasswordUseCase(),
-        loginWithEmailUseCase = LoginWithEmailUseCase(fakeRepository, ValidateEmailUseCase(), ValidatePasswordUseCase()),
+        loginWithEmailUseCase = LoginWithEmailUseCase(
+            fakeRepository, ValidateEmailUseCase(), ValidatePasswordUseCase(),
+            EnforceEmailVerificationUseCase(fakeRepository)
+        ),
         loginWithGoogleUseCase = LoginWithGoogleUseCase(fakeRepository),
         loginWithAppleUseCase = LoginWithAppleUseCase(fakeRepository)
     )
@@ -89,7 +93,7 @@ class LoginViewModelTest {
             viewModel.onEvent(LoginEvent.OnLoginClicked)
 
             val effect = awaitItem()
-            assert(effect is LoginEffect.ShowError)
+            assertIs<LoginEffect.ShowError>(effect)
         }
     }
 
@@ -97,7 +101,7 @@ class LoginViewModelTest {
     fun `cancelar Google Sign-In no emite ningun effect`() = runTest {
         fakeRepository.exceptionToThrow = AuthException.SignInCancelled
         val viewModel = createViewModel()
-        val fakeActivity = mockk<PlatformActivity>()
+        val fakeActivity = PlatformActivity()
 
         viewModel.effect.test {
             viewModel.onEvent(LoginEvent.OnGoogleSignInClicked(fakeActivity))

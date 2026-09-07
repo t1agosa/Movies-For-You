@@ -17,7 +17,6 @@ kotlinx-coroutines = "1.11.0"
 firebase-bom = "34.14.0"
 androidx-credentials = "1.6.0"
 googleid = "1.2.0"
-mockk = "1.14.9"
 turbine = "1.2.1"
 navigation3 = "1.1.1"
 kotlinx-serialization = "1.9.0"
@@ -52,7 +51,6 @@ androidx-credentials-play-services-auth = { module = "androidx.credentials:crede
 googleid = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid" }
 kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinx-coroutines" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
-mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 androidx-lifecycle-viewmodel = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 navigation3-ui = { module = "org.jetbrains.androidx.navigation3:navigation3-ui", version.ref = "navigation3" }

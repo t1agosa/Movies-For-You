@@ -9,5 +9,6 @@ expect class FirebaseAuthService() {
     suspend fun signInWithGoogleIdToken(idToken: String): FirebaseUserData
     suspend fun signInWithAppleCredential(idToken: String, rawNonce: String): FirebaseUserData
     suspend fun signOut()
+    suspend fun deleteCurrentUser()
     fun observeAuthState(): Flow<FirebaseUserData?>
 }

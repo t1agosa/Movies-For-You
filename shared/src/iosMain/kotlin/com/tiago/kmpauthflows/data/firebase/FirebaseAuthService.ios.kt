@@ -35,5 +35,9 @@ actual class FirebaseAuthService {
         throw NotImplementedError("Pendiente: implementar con Mac. Ver TODO en este archivo.")
     }
 
+    actual suspend fun deleteCurrentUser() {
+        throw NotImplementedError("Pendiente: implementar con Mac. Ver TODO en este archivo.")
+    }
+
     actual fun observeAuthState(): Flow<FirebaseUserData?> = flowOf(null)
 }
