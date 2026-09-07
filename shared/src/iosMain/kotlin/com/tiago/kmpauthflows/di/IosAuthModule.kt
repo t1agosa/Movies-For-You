@@ -14,7 +14,8 @@ val iosAuthModule = module {
 
     single { ValidateEmailUseCase() }
     single { ValidatePasswordUseCase() }
-    single { LoginWithEmailUseCase(get(), get(), get()) }
+    single { EnforceEmailVerificationUseCase(get()) }
+    single { LoginWithEmailUseCase(get(), get(), get(), get()) }
     single { RegisterWithEmailUseCase(get(), get(), get()) }
     single { LoginWithGoogleUseCase(get()) }
     single { LoginWithAppleUseCase(get()) }
