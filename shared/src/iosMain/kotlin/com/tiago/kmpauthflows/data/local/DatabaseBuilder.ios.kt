@@ -1,14 +1,13 @@
 package com.tiago.kmpauthflows.data.local
 
 import androidx.room3.Room
-import androidx.room3.RoomDatabase
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSFileManager
 import platform.Foundation.NSUserDomainMask
 
 @OptIn(ExperimentalForeignApi::class)
-fun getMoviesDatabaseBuilde(): RoomDatabase.Builder<MoviesDatabase> {
+fun buildMoviesDatabase(): MoviesDatabase {
     val documentDirectory = NSFileManager.defaultManager.URLForDirectory(
         directory = NSDocumentDirectory,
         inDomain = NSUserDomainMask,
@@ -17,5 +16,6 @@ fun getMoviesDatabaseBuilde(): RoomDatabase.Builder<MoviesDatabase> {
         error = null
     )
     val dbFilePath = requireNotNull(documentDirectory?.path) + "/movies.db"
-    return Room.databaseBuilder<MoviesDatabase>(name = dbFilePath)
+    val builder = Room.databaseBuilder<MoviesDatabase>(name = dbFilePath)
+    return getMoviesDatabase(builder)
 }
