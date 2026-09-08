@@ -3,9 +3,11 @@ package com.tiago.kmpauthflows.domain.usecase
 import app.cash.turbine.test
 import com.tiago.kmpauthflows.domain.fake.FakeFavoriteRepository
 import com.tiago.kmpauthflows.domain.util.Result
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertIs
 
 class ToggleFavoriteUseCaseTest {
@@ -43,5 +45,14 @@ class ToggleFavoriteUseCaseTest {
         val result = useCase(1)
 
         assertIs<Result.Error>(result)
+    }
+
+    @Test
+    fun `relanza CancellationException en vez de envolverla en Result Error`() = runTest {
+        fakeRepository.shouldThrowOnToggle = CancellationException("cancelado")
+
+        assertFailsWith<CancellationException> {
+            useCase(1)
+        }
     }
 }

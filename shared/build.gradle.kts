@@ -7,6 +7,8 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlinxSerialization)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.androidxRoom3)
     id("com.codingfeline.buildkonfig")
 }
 
@@ -46,6 +48,7 @@ kotlin {
 
                 implementation(project.dependencies.platform(libs.firebase.bom))   // BoM primero, sin versión propia
                 implementation(libs.firebase.auth)
+                implementation(libs.firebase.firestore)
                 implementation(libs.androidx.credentials)
                 implementation(libs.androidx.credentials.play.services.auth)
                 implementation(libs.googleid)
@@ -76,6 +79,9 @@ kotlin {
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.kotlinx.json)
+
+            implementation(libs.androidx.room3.runtime)
+            implementation(libs.androidx.sqlite.bundled)
 
             implementation(libs.coil.compose)
             implementation(libs.coil.network.ktor)
@@ -122,6 +128,13 @@ buildkonfig {
     }
 }
 
+room3 {
+    schemaDirectory("$projectDir/schemas")
+}
+
 dependencies {
     androidRuntimeClasspath(libs.compose.uiTooling)
+    add("kspAndroid", libs.androidx.room3.compiler)
+    add("kspIosArm64", libs.androidx.room3.compiler)
+    add("kspIosSimulatorArm64", libs.androidx.room3.compiler)
 }
