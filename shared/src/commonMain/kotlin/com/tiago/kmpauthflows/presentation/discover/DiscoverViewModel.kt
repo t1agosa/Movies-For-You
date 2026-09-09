@@ -15,6 +15,7 @@ import com.tiago.kmpauthflows.domain.usecase.ToggleWatchlistUseCase
 import com.tiago.kmpauthflows.domain.util.Result
 import com.tiago.kmpauthflows.presentation.common.MovieCardUiState
 import com.tiago.kmpauthflows.presentation.common.toMessageRes
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -44,22 +45,19 @@ class DiscoverViewModel(
 
     // null = mostrando populares. no-null = ultima busqueda confirmada.
     private val activeQuery = MutableStateFlow<String?>(null)
-    private val popularMovies = MutableStateFlow<List<Movie>>(emptyList())
-    private val baseMovies = MutableStateFlow<List<Movie>>(emptyList())
+    private val searchResults = MutableStateFlow<List<Movie>>(emptyList())
 
-    init {
-        viewModelScope.launch {
-            getPopularMoviesUseCase().collect { movies ->
-                popularMovies.value = movies
-                if (activeQuery.value == null) {
-                    baseMovies.value == movies
-                }
-            }
-        }
-        observeToggleStates()
+    // derivado puro, sin ninguna coroutine escribiendolo a mano - elimina
+    // la carrera entre "quien actualiza esto" y "quien lo lee"
+    private val baseMovies: Flow<List<Movie>> = combine(
+        activeQuery,
+        getPopularMoviesUseCase(),
+        searchResults
+    ) { query, popular, search ->
+        if (query == null) popular else search
     }
 
-    private fun observeToggleStates() {
+    init {
         viewModelScope.launch {
             combine(
                 baseMovies,
@@ -92,7 +90,6 @@ class DiscoverViewModel(
             is DiscoverEvent.OnFavoriteToggle -> onFavoriteToggle(event.movieId)
             is DiscoverEvent.OnWatchedToggle -> onWatchedToggle(event.movieId)
             is DiscoverEvent.OnWatchlistToggle -> onWatchlistToggle(event.movieId)
-
         }
     }
 
@@ -101,7 +98,6 @@ class DiscoverViewModel(
 
         if (query.isEmpty()) {
             activeQuery.value = null
-            baseMovies.value = popularMovies.value
             _state.update { it.copy(error = null) }
             return
         }
@@ -111,18 +107,12 @@ class DiscoverViewModel(
             _state.update { it.copy(isLoading = true, error = null) }
             when (val result = searchMoviesUseCase(query)) {
                 is Result.Success -> {
-                    baseMovies.value = result.data
+                    searchResults.value = result.data
                     _state.update { it.copy(isLoading = false) }
                 }
-
                 is Result.Error -> {
-                    val movieException = result.exception as? MovieException
-                        ?: MovieException.Unknown(result.exception)
-                    _state.update {
-                        it.copy(
-                            isLoading = false, error = movieException.toMessageRes()
-                        )
-                    }
+                    val movieException = result.exception as? MovieException ?: MovieException.Unknown(result.exception)
+                    _state.update { it.copy(isLoading = false, error = movieException.toMessageRes()) }
                 }
             }
         }
@@ -136,8 +126,7 @@ class DiscoverViewModel(
         viewModelScope.launch {
             val result = toggleFavoriteUseCase(movieId)
             if (result is Result.Error) {
-                val movieException =
-                    result.exception as? MovieException ?: MovieException.Unknown(result.exception)
+                val movieException = result.exception as? MovieException ?: MovieException.Unknown(result.exception)
                 _effect.emit(DiscoverEffect.ShowError(movieException.toMessageRes()))
             }
         }
@@ -147,8 +136,7 @@ class DiscoverViewModel(
         viewModelScope.launch {
             val result = toggleWatchedUseCase(movieId)
             if (result is Result.Error) {
-                val movieException =
-                    result.exception as? MovieException ?: MovieException.Unknown(result.exception)
+                val movieException = result.exception as? MovieException ?: MovieException.Unknown(result.exception)
                 _effect.emit(DiscoverEffect.ShowError(movieException.toMessageRes()))
             }
         }
@@ -158,8 +146,7 @@ class DiscoverViewModel(
         viewModelScope.launch {
             val result = toggleWatchlistUseCase(movieId)
             if (result is Result.Error) {
-                val movieException =
-                    result.exception as? MovieException ?: MovieException.Unknown(result.exception)
+                val movieException = result.exception as? MovieException ?: MovieException.Unknown(result.exception)
                 _effect.emit(DiscoverEffect.ShowError(movieException.toMessageRes()))
             }
         }
