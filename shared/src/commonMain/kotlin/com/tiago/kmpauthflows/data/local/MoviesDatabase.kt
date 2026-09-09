@@ -10,4 +10,7 @@ abstract class MoviesDatabase : RoomDatabase() {
 }
 
 fun getMoviesDatabase(builder: RoomDatabase.Builder<MoviesDatabase>): MoviesDatabase =
-    builder.setDriver(BundledSQLiteDriver()).build()
+    builder
+        .setDriver(BundledSQLiteDriver())
+        .fallbackToDestructiveMigration(dropAllTables = true)
+        .build()

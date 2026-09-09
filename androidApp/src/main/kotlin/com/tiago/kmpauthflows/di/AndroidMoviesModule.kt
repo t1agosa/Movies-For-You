@@ -2,6 +2,7 @@ package com.tiago.kmpauthflows.di
 
 import com.tiago.kmpauthflows.data.local.MoviesDatabase
 import com.tiago.kmpauthflows.data.local.buildMoviesDatabase
+import com.tiago.kmpauthflows.presentation.detail.DetailViewModel
 import com.tiago.kmpauthflows.presentation.discover.DiscoverViewModel
 import com.tiago.kmpauthflows.presentation.mymovies.MyMoviesViewModel
 import org.koin.android.ext.koin.androidContext
@@ -16,5 +17,8 @@ val androidMoviesModule = module {
     }
     viewModel {
         MyMoviesViewModel(get(), get(), get(), get(), get(), get(), get())
+    }
+    viewModel { (movieId: Int) ->
+        DetailViewModel(movieId, get(), get(), get(), get(), get(), get(), get())
     }
 }

@@ -64,7 +64,7 @@ class MyMoviesViewModel(
                 buildSection(watchedIds),
                 buildSection(watchlistIds)
             ) { favorites, watched, watchlist ->
-                MyMoviesState(favorites = favorites, watched = watched, watchlist = watchlist)
+                MyMoviesState(favorites = favorites, watched = watched, watchlist = watchlist, isLoading = false)
             }.collect { newState -> _state.value = newState }
         }
     }

@@ -82,6 +82,7 @@ kotlin {
 
             implementation(libs.androidx.room3.runtime)
             implementation(libs.androidx.sqlite.bundled)
+            implementation(libs.androidx.lifecycle.viewmodel.navigation3)
 
             implementation(libs.coil.compose)
             implementation(libs.coil.network.ktor)

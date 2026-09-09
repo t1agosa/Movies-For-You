@@ -6,7 +6,8 @@ import org.jetbrains.compose.resources.StringResource
 data class MyMoviesState(
     val favorites: List<MovieCardUiState> = emptyList(),
     val watched: List<MovieCardUiState> = emptyList(),
-    val watchlist: List<MovieCardUiState> = emptyList()
+    val watchlist: List<MovieCardUiState> = emptyList(),
+    val isLoading: Boolean = true
 )
 
 sealed interface MyMoviesEvent {

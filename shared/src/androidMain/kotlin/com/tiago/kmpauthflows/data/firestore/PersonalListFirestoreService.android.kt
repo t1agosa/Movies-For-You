@@ -6,8 +6,11 @@ import com.google.firebase.firestore.FirebaseFirestoreException
 import com.tiago.kmpauthflows.domain.model.MovieException
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.retryWhen
 import kotlinx.coroutines.tasks.await
 
 actual class PersonalListFirestoreService actual constructor(private val collectionName: String) {
@@ -36,6 +39,20 @@ actual class PersonalListFirestoreService actual constructor(private val collect
         }
         awaitClose { registration.remove() }
     }
+        .retryWhen { _, attempt ->
+            // el listener murio (posible race entre logout y un listener
+            // todavia activo). si hay sesion, reintentamos con un listener
+            // NUEVO (no revivimos el viejo, Firestore no lo permite) hasta
+            // 3 veces. sin sesion, no tiene sentido reintentar.
+            val hasUser = auth.currentUser != null
+            if (hasUser && attempt < 3) {
+                delay(1000)
+                true
+            } else {
+                false
+            }
+        }
+        .catch { emit(emptyList()) } // si se agotaron los reintentos, no crashea: se ve vacio
 
     actual suspend fun toggleItem(movieId: Int) {
         try {

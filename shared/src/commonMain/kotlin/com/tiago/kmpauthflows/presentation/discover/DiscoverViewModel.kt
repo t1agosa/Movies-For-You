@@ -46,6 +46,7 @@ class DiscoverViewModel(
     // null = mostrando populares. no-null = ultima busqueda confirmada.
     private val activeQuery = MutableStateFlow<String?>(null)
     private val searchResults = MutableStateFlow<List<Movie>>(emptyList())
+    private var isFirstMoviesEmission = true
 
     // derivado puro, sin ninguna coroutine escribiendolo a mano - elimina
     // la carrera entre "quien actualiza esto" y "quien lo lee"
@@ -77,7 +78,15 @@ class DiscoverViewModel(
                     )
                 }
             }.collect { cards ->
-                _state.update { it.copy(movies = cards) }
+                _state.update { current ->
+                    current.copy(
+                        movies = cards,
+                        // la carga inicial del catalogo termina en la primera emision;
+                        // de ahi en mas, isLoading lo maneja solo onSearchSubmit()
+                        isLoading = if (isFirstMoviesEmission) false else current.isLoading
+                    )
+                }
+                isFirstMoviesEmission = false
             }
         }
     }

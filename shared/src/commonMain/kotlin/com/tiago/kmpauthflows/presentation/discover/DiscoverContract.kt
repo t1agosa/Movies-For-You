@@ -6,7 +6,7 @@ import org.jetbrains.compose.resources.StringResource
 data class DiscoverState(
     val searchQuery: String = "",
     val movies: List<MovieCardUiState> = emptyList(),
-    val isLoading: Boolean = false,
+    val isLoading: Boolean = true,
     val error: StringResource? = null
 )
 

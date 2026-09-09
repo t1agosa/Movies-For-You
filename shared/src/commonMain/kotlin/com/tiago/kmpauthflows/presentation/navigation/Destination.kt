@@ -12,4 +12,6 @@ sealed interface Destination : NavKey {
 
     @Serializable
     data object Home : Destination
+    @Serializable
+    data class Detail(val movieId: Int) : Destination
 }

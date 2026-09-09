@@ -10,6 +10,7 @@ data class MovieEntity(
     val title: String,
     val overview: String,
     val posterUrl: String?,
+    val backdropUrl: String? = null,
     val releaseDate: String?,
     val voteAverage: Double
 )
@@ -19,6 +20,7 @@ fun MovieEntity.toDomain(): Movie = Movie(
     title = title,
     overview = overview,
     posterUrl = posterUrl,
+    backdropUrl = backdropUrl,
     releaseDate = releaseDate,
     voteAverage = voteAverage
 )

@@ -1,12 +1,15 @@
 package com.tiago.kmpauthflows
 
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
 import com.tiago.kmpauthflows.presentation.navigation.Destination
+import com.tiago.kmpauthflows.ui.detail.DetailScreen
 import com.tiago.kmpauthflows.ui.home.HomeScreen
 import com.tiago.kmpauthflows.ui.login.LoginScreen
 import com.tiago.kmpauthflows.ui.register.RegisterScreen
@@ -23,6 +26,7 @@ private val navConfig = SavedStateConfiguration {
             subclass(Destination.Login::class, Destination.Login.serializer())
             subclass(Destination.Register::class, Destination.Register.serializer())
             subclass(Destination.Home::class, Destination.Home.serializer())
+            subclass(Destination.Detail::class, Destination.Detail.serializer())
         }
     }
 }
@@ -35,6 +39,10 @@ fun App() {
         NavDisplay(
             backStack = backStack,
             onBack = { backStack.removeLastOrNull() },
+            entryDecorators = listOf(
+                rememberSaveableStateHolderNavEntryDecorator(),
+                rememberViewModelStoreNavEntryDecorator()
+            ),
             entryProvider = entryProvider {
                 entry<Destination.Login> {
                     LoginScreen(
@@ -50,7 +58,14 @@ fun App() {
                 }
                 entry<Destination.Home> {
                     HomeScreen(
-                        onNavigateToLogin = { backStack.clear(); backStack.add(Destination.Login) }
+                        onNavigateToLogin = { backStack.clear(); backStack.add(Destination.Login) },
+                        onNavigateToDetail = { movieId -> backStack.add(Destination.Detail(movieId)) }
+                    )
+                }
+                entry<Destination.Detail> { destination ->
+                    DetailScreen(
+                        movieId = destination.movieId,
+                        onNavigateBack = { backStack.removeLastOrNull() }
                     )
                 }
             }
