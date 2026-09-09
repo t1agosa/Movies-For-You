@@ -14,4 +14,8 @@
 
     <string name="auth_error_unverified_email_expired">Tu cuenta fue eliminada por no verificarse dentro de las 24hs. Registrate de nuevo.</string>
 
+    <string name="movie_error_network">Sin conexión a internet</string>
+    <string name="movie_error_not_found">No encontramos esa película</string>
+    <string name="movie_error_unknown">Ocurrió un error inesperado</string>
+
 </resources>

@@ -12,6 +12,7 @@ import com.tiago.kmpauthflows.domain.repository.MovieRepository
 import com.tiago.kmpauthflows.domain.repository.WatchedRepository
 import com.tiago.kmpauthflows.domain.repository.WatchlistRepository
 import com.tiago.kmpauthflows.domain.usecase.GetMovieDetailUseCase
+import com.tiago.kmpauthflows.domain.usecase.GetMoviesByIdsUseCase
 import com.tiago.kmpauthflows.domain.usecase.GetPopularMoviesUseCase
 import com.tiago.kmpauthflows.domain.usecase.ObserveFavoritesUseCase
 import com.tiago.kmpauthflows.domain.usecase.ObserveWatchedUseCase
@@ -45,4 +46,5 @@ val moviesDataModule = module {
     single { ToggleWatchedUseCase(get()) }
     single { ObserveWatchlistUseCase(get()) }
     single { ToggleWatchlistUseCase(get()) }
+    single { GetMoviesByIdsUseCase(get()) }
 }
